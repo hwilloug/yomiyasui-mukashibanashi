@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Japanese Folk Tales
+{% endblock %}
+
+{% block main %}
+
+<div id="story-selection">
+    <h2>Select a story</h2>
+
+    <ul id="story-list">
+    {% for story in stories %}
+        <li><a href="/stories/{{ story.id }}" class="story-list-item">{{ story.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

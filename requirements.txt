@@ -1,0 +1,5 @@
+Flask
+Flask-Session
+requests
+sudachipy
+sudachidict_core

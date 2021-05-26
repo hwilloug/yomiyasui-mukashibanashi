@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block main %}
+
+<script>
+
+    // Tooltip for definitions
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip({
+          trigger: 'click'
+      }).on("show.bs.tooltip", function() {
+          // hide other tooltips if they are open
+          $('[data-toggle="tooltip"]').not(this).tooltip('hide');
+
+          $(this).addClass('active')
+
+          // Get definitions
+          $.getJSON( '/_get_definition', { word: $(this).children().html() }, function(result) {
+
+              let html = `${ result.japanese[0].word || '' } [${ result.japanese[0].reading }]<br><ol class="definitions">`
+
+              let definitions = "";
+              for (let i = 0; i < result.english.length; i++) {
+                  html += `<li><em>(${result.part_of_speech[i]})</em> ${result.english[i]}</li>`;
+                  definitions += `<li><em>(${result.part_of_speech[i]})</em> ${result.english[i]}</li>`;
+              }
+
+              html += "</ol>";
+
+              $('.tooltip-inner').html(html);
+
+              if ( result  ) {
+                  $("#word-history-rows").append(`
+                    <tr>
+                        <td>${ result.japanese[0].word || ''}</td>
+                        <td>${ result.japanese[0].reading || ''}</td>
+                        <td><ol>${ definitions }</ol></td>
+                    </tr>
+                  `)
+              }
+          })
+
+      })
+
+      $("#clear-history").click(function() {
+          console.log("clearing history")
+          $(".active").removeClass("active")
+          $("#word-history-rows").html('')
+      })
+
+    })
+
+
+</script>
+
+<div id="story-body">
+    <h2 id="story-title">{{ title }}</h2>
+
+    <div id="story-text">
+    {% for paragraph in paragraphs %}
+    <p>
+        {% for word in paragraph %}
+        <span id="text" data-toggle="tooltip" data-placement="bottom" data-html="true" class="word" title=" ">
+            {{ word.word }}<span hidden>{{ word.normalized }}</span>
+        </span>
+        {% endfor %}
+    </p>
+    {% endfor %}
+    </div>
+
+</div>
+
+<div id="story-body" class="align-self-stretch">
+    <h3>単語の歴史</h3>
+
+    {% if session.user_id %}
+    <table id="word-history-table">
+        <thead>
+            <tr>
+                <th>単語</th>
+                <th>読み方</th>
+                <th>意味</th>
+            </tr>
+        </thead>
+        <tbody id="word-history-rows">
+
+        </tbody>
+    </table>
+
+    <div class="btn-group dropright">
+        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" id="actions-button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            ACTIONS
+        </button>
+        <div class="dropdown-menu">
+            <p class="word-action" id="save-words">Save Words</p>
+            <p class="word-action" id="clear-history">Clear Words</p>
+        </div>
+    </div>
+    {% else %}
+    <div>
+        <a href="/login">Log in to access word history</a>
+    </div>
+    <br>
+    {% endif %}
+
+</div>
+
+{% endblock %}

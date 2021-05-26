@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Stick&display=swap');
+
+html,body {
+    background-color: #CC8F8E;
+}
+
+#nav-bar {
+    background-color: #931717 !important;
+    font-family: 'Stick', 'cursive';
+    font-size: 2rem;
+    border: black 1px solid !important;
+}
+
+.nav-bar-title {
+    font-size: 3rem;
+}
+
+main .form-control
+{
+    /* Center form controls */
+    display: inline-block;
+
+    /* Override Bootstrap's 100% width for form controls */
+    width: auto;
+
+    margin: auto;
+    text-align: center;
+}
+
+h2,h3 {
+    padding: 2rem 0px;
+    font-family: 'Stick', 'cursive';
+}
+
+#text {
+    width: calc(auto - 5px);
+    display: inline-block;
+    margin: -2px;
+}
+
+.word:hover, .active {
+    background-color: lightblue;
+}
+
+.definitions {
+    text-align: left;
+    padding: 0px 10px 0px 15px;
+}
+
+#story-body {
+    margin: 2rem 10%;
+    padding: 0px 4rem;
+    background-color: #F3E4E2;
+    box-shadow: 10px 10px 8px #888888;
+    border: black 1px solid;
+}
+
+#story-text {
+    padding-bottom: 2rem;
+}
+
+#story-selection {
+    background-color: #F3E4E2;
+    box-shadow: 10px 10px 8px #888888;
+    padding: 40px;
+    margin: 10%;
+    border: black 1px solid;
+}
+
+#story-list {
+    list-style-type: none;
+}
+
+#story-list li {
+    margin: 10px 5px 5px 5px;
+}
+
+.story-list-item {
+    color: black;
+}
+
+.story-list-item:hover {
+    font-style: italic;
+    text-decoration: none;
+    color: #931717;
+}
+
+#word-history-table {
+    margin: 10px;
+    width: 100%;
+}
+
+#word-history-table td,th{
+    border: 1px solid black;
+    padding: 5px;
+}
+
+#word-history-table th {
+    background-color: #931717;
+    color: white;
+}
+
+#actions-button {
+    margin: 10px;
+}
+
+.word-action {
+    margin: auto;
+    padding: 4px;
+    text-align: center;
+}
+
+.word-action:hover {
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #931717;
+    color: white;
+}
