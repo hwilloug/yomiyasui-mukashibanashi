@@ -47,9 +47,17 @@ def login_required(f):
     return decorated_function
 
 
+@app.route("/")
+def index():
+    stories = db.execute("SELECT id,title FROM stories;")
+    return render_template('index.html', stories=stories)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    session.clear()
+
+    if "user_id" in session.keys():
+        session.clear()
 
     if request.method == "POST":
 
@@ -58,17 +66,17 @@ def login():
 
         if not username:
             flash("Please enter a username.", "warning")
-            return render_template("login.html")
+            return redirect(request.path)
 
         elif not password:
             flash("Please enter a password.", "warning")
-            return render_template("login.html")
+            return redirect(request.path)
 
         users = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         if len(users) != 1 or not check_password_hash(users[0]["hash"], password):
             flash("Username and/or password is incorrect.", "danger")
-            return render_template("login.html")
+            return redirect(request.path)
 
         session["user_id"] = users[0]["id"]
 
@@ -98,21 +106,26 @@ def register():
 
         if not name:
             flash("Please enter a username.", "danger")
-            return render_template("register.html")
+            return redirect(request.path)
+
+        if db.execute("SELECT username FROM users WHERE username=?", name):
+            flash("User already exists.", "danger")
+            return redirect(request.path)
 
         if not password or not confirm_password:
             flash("Please enter a password and confirm it.", "danger")
-            return render_template("register.html")
+            return redirect(request.path)
+
+        if password != confirm_password:
+            flash("Passwords do not match. Please try again.", "danger")
+            return redirect(request.path)
+
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?);", name, generate_password_hash(password))
+
+        flash("User successfully created. Please log in to continue.", "primary")
+        return redirect("/login")
 
     return render_template("register.html")
-
-
-@app.route("/")
-def index():
-
-    stories = db.execute("SELECT id,title FROM stories;")
-
-    return render_template('index.html', stories=stories)
 
 
 @app.route("/stories/<int:story_id>")
@@ -142,10 +155,51 @@ def render_story(story_id):
     return render_template('story.html', title=story['title'], paragraphs=story_parsed, dictionary=definitions)
 
 
-@app.route("/account")
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account_page():
-    return render_template('account.html')
+    user_info = db.execute('SELECT * FROM users WHERE id = ?', session['user_id'])[0]
+
+    if request.method == 'POST':
+
+        new_username = request.form.get('new_username')
+        new_password = request.form.get('new_password')
+        confirm_new_password = request.form.get('new_password_confirmation')
+        current_password = request.form.get('current_password')
+
+        if not check_password_hash(user_info["hash"], current_password):
+            flash('Incorrect CURRENT password.', "danger")
+            return redirect(request.path)
+
+        updates = []
+
+        if new_username:
+            if db.execute("SELECT username FROM users WHERE username=?", new_username):
+                flash("That username already exists.", "danger")
+                return redirect(request.path)
+
+            db.execute('UPDATE users SET username = ? WHERE id = ?', new_username, session['user_id'])
+            updates.append('username')
+
+        if new_password:
+            if new_password != confirm_new_password:
+                flash('New password does not match confirmation', "danger")
+                return redirect(request.path)
+
+            db.execute('UPDATE users SET hash = ? WHERE id = ?', generate_password_hash(new_password), session["user_id"])
+            updates.append('password')
+
+        if len(updates):
+            update = 'Successfully updated: ' + ', '.join(updates)
+            update_category = "primary"
+        else:
+            update = "You didn't make any changes..."
+            update_category = "danger"
+
+        flash(update, update_category)
+        return redirect("/account")
+
+    return render_template('account.html', username=user_info['username'])
 
 
 @app.route("/my_words")

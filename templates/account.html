@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My Account
+{% endblock %}
+
+{% block main %}
+    <h3>My Account</h3><br>
+
+    <table id="account-info">
+        <tbody>
+            <tr>
+                <td><b>Username</b></td>
+                <td>{{ username }}</td>
+            </tr>
+            <tr>
+                <td><b>Password</b></td>
+                <td>######</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <button id="update-account" class="btn btn-secondary">Update Account</button>
+
+    <form id="update-account-form" class="hidden" action="/account" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="new_username" placeholder="New Username" type="text">
+        </div>
+        <div class="form-group">
+            <input id="new-password" class="form-control" name="new_password" placeholder="New Password" type="password">
+        </div>
+        <div id="confirmation-group" class="form-group hidden">
+            <input id="confirm-new-password" class="form-control" name="new_password_confirmation" placeholder="Confirm New Password" type="password">
+        </div>
+        <div class="form-group">
+            <input required class="form-control" name="current_password" placeholder="Current Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Update Account</button>
+    </form>
+
+    <script>
+
+    let updateAccountBtn = document.querySelector('#update-account')
+    updateAccountBtn.addEventListener('click', (event) => {
+        updateAccountBtn.setAttribute('class', 'hidden')
+
+        document.querySelector('#update-account-form').removeAttribute('class')
+    })
+
+    let newPassword = document.querySelector('#new-password')
+    newPassword.addEventListener('keyup', (event) => {
+        let confirmNewPassword = document.querySelector('#confirm-new-password')
+        let confirmationGroup = document.querySelector('#confirmation-group')
+        if (newPassword.value) {
+            confirmNewPassword.setAttribute('required', true)
+            confirmationGroup.setAttribute('class', 'form-group')
+        } else {
+            confirmNewPassword.removeAttribute('required')
+            confirmNewPassword.value = ''
+            confirmationGroup.setAttribute('class', 'form-group hidden')
+        }
+    })
+
+    </script>
+{% endblock %}

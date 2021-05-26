@@ -35,10 +35,13 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mr-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/">Story Selection</a></li>
+                </ul>
+                <hr>
                 {% if session.user_id %}
                 <ul class="navbar-nav mr-auto mt-2">
                     <li class="nav-item"><a class="nav-link" href="/my_words">My Words</a></li>
-                    <hr>
                     <li class="nav-item"><a class="nav-link" href="/account">My Account</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                 </ul>

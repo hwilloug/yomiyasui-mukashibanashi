@@ -7,7 +7,6 @@ html,body {
 #nav-bar {
     background-color: #931717 !important;
     font-family: 'Stick', 'cursive';
-    font-size: 2rem;
     border: black 1px solid !important;
 }
 
@@ -115,4 +114,18 @@ h2,h3 {
     cursor: pointer;
     background-color: #931717;
     color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+#account-info {
+    margin: 10px;
+}
+
+#account-info td {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid black;
 }
